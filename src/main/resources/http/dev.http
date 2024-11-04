@@ -34,3 +34,16 @@ PUT {{URL}}/trips/5/guides/2
 
 ### Populate the database with data
 POST {{URL}}/trips/populate
+
+
+
+### Get a trip that does not exist
+GET {{URL}}/trips/25
+
+### Update a trip with fields that does not exist
+PUT {{URL}}/trips/1
+Content-Type: application/json
+
+{
+  "this field does not exist": "Hello"
+}
