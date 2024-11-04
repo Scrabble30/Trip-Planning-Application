@@ -1,0 +1,36 @@
+### Get all trips
+GET {{URL}}/trips
+
+### Get trip by id
+GET {{URL}}/trips/1
+
+### Create a new trip
+POST {{URL}}/trips
+Content-Type: application/json
+
+{
+  "startTime": "11:30:00",
+  "endTime": "14:30:00",
+  "startPosition": "Vineyard Entrance",
+  "name": "Wine Tasting Tour",
+  "price": 89.99,
+  "category": "CULINARY"
+}
+
+### Update an existing trip
+PUT {{URL}}/trips/5
+Content-Type: application/json
+
+{
+  "name": "Updated trip name",
+  "price": 59.99
+}
+
+### Delete a trip
+DELETE {{URL}}/trips/5
+
+### Add a guide to a trip
+PUT {{URL}}/trips/5/guides/2
+
+### Populate the database with data
+POST {{URL}}/trips/populate
