@@ -8,9 +8,14 @@ import app.entities.Trip;
 import app.enums.TripCategory;
 import app.exceptions.APIException;
 import app.mapper.TripMapper;
+import app.services.TripService;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.javalin.http.Context;
 import io.javalin.http.HttpStatus;
 import io.javalin.validation.ValidationException;
@@ -28,9 +33,18 @@ public class TripController {
     private final EntityManagerFactory emf;
     private final TripDAO tripDAO;
 
+    private final ObjectMapper objectMapper;
+    private final TripService tripService;
+
     private TripController(EntityManagerFactory emf) {
         this.tripDAO = TripDAO.getInstance(emf);
         this.emf = emf;
+
+        this.objectMapper = new ObjectMapper();
+        this.objectMapper.registerModule(new JavaTimeModule());
+        this.objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+        this.tripService = TripService.getInstance(objectMapper);
     }
 
     public static TripController getInstance(EntityManagerFactory emf) {
@@ -49,6 +63,15 @@ public class TripController {
         ctx.json(tripDTOSet, TripDTO.class);
     }
 
+    private final String[] packingListCategories = new String[]{
+            "beach",
+            "city",
+            "forest",
+            "lake",
+            "sea",
+            "snow"
+    };
+
     public void getById(Context ctx) {
         try {
             Long id = ctx.pathParamAsClass("id", Long.class).get();
@@ -56,8 +79,15 @@ public class TripController {
             Trip trip = tripDAO.getById(id);
             TripDTO tripDTO = TripMapper.convertToDTO(trip);
 
+            ObjectNode response = objectMapper.valueToTree(tripDTO);
+
+            String packingListCategory = packingListCategories[Math.min(tripDTO.getCategory().ordinal(), packingListCategories.length - 1)];
+            JsonNode packingListJson = tripService.getPackingItemsForTrip(packingListCategory);
+
+            response.set("packingListItems", packingListJson.get("items"));
+
             ctx.status(HttpStatus.OK);
-            ctx.json(tripDTO, TripDTO.class);
+            ctx.json(response);
         } catch (ValidationException e) {
             throw new APIException(HttpStatus.BAD_REQUEST, e.getErrors().toString(), e.getCause());
         } catch (EntityNotFoundException e) {

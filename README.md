@@ -307,6 +307,17 @@ This helps to organize code and prevents TripController from becoming too overwh
 
 ---
 
+### Task 6.3
+
+Because the mentioned categories in the task were not mentioned sooner, I was forced to write some conversion code from
+my existing trip categories to the packing item list categories.
+The conversion simply takes my trip category, converts its ordinal and uses that as the index for a String array of
+packing list categories.
+I could have tried to match my trip categories to the packing categories or even have converted all my trip categories
+to packing categories, but that would have been too much work for a single task.
+
+---
+
 ### Includes:
 
 - Jackson
