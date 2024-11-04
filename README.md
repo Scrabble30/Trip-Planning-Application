@@ -318,6 +318,17 @@ to packing categories, but that would have been too much work for a single task.
 
 ---
 
+### Task 6.4
+
+#### GET `/trips/1/packingitems/weightsum/`
+
+```json
+{
+  "tripId": 1,
+  "packingItemsWeightSumInGrams": 7300.0
+}
+```
+
 ### Includes:
 
 - Jackson

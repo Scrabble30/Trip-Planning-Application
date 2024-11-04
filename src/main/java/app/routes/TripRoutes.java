@@ -24,6 +24,7 @@ public class TripRoutes {
             put("/{tripId}/guides/{guideId}", tripController::addGuideToTrip);
             get("/categories/{category}", tripController::getTripsByCategory);
             get("/guides/totalprice", tripController::getGuidesTotalPrice);
+            get("/{tripId}/packingitems/weightsum", tripController::getWeightSumOfTripPackingItems);
             post("/populate", tripController::populate);
         };
     }

@@ -192,6 +192,34 @@ public class TripController {
         ctx.json(response);
     }
 
+    public void getWeightSumOfTripPackingItems(Context ctx) {
+        try {
+            Long id = ctx.pathParamAsClass("tripId", Long.class).get();
+
+            Trip trip = tripDAO.getById(id);
+
+            String packingListCategory = packingListCategories[Math.min(trip.getCategory().ordinal(), packingListCategories.length - 1)];
+            JsonNode packingListJson = tripService.getPackingItemsForTrip(packingListCategory).get("items");
+
+            double packingItemsSum = 0.0;
+
+            for (JsonNode node : packingListJson) {
+                packingItemsSum += node.get("weightInGrams").asDouble();
+            }
+
+            ObjectNode response = JsonNodeFactory.instance.objectNode();
+            response.put("tripId", trip.getId());
+            response.put("packingItemsWeightSumInGrams", packingItemsSum);
+
+            ctx.status(HttpStatus.OK);
+            ctx.json(response);
+        } catch (ValidationException e) {
+            throw new APIException(HttpStatus.BAD_REQUEST, e.getErrors().toString(), e.getCause());
+        } catch (EntityNotFoundException e) {
+            throw new APIException(HttpStatus.NOT_FOUND, e.getMessage(), e.getCause());
+        }
+    }
+
     public void populate(Context ctx) {
         Populator populator = Populator.getInstance(emf);
         populator.populateData();

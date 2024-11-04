@@ -55,3 +55,8 @@ GET {{URL}}/trips/categories/SIGHTSEEING
 
 ### Get each guides total price
 GET {{URL}}/trips/guides/totalprice
+
+
+
+### Get the weight sum of all packing items for trip
+GET {{URL}}/trips/1/packingitems/weightsum/
