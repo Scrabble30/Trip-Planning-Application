@@ -329,6 +329,17 @@ to packing categories, but that would have been too much work for a single task.
 }
 ```
 
+---
+
+### Task 8.3
+
+The reason for the RestAssured tests failing when security is active is because any routes will be passed through the
+AccessController and SecurityController. The SecurityController will check for a Json Web Token (JWT) in the
+Authorization header and use that to authenticate the user. The AccessHandler will then use that authenticated user to
+further authorize the user and see if they have the valid roles to proceed.
+
+---
+
 ### Includes:
 
 - Jackson
