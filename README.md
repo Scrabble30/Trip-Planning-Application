@@ -299,6 +299,14 @@ Bellow are two examples of the errors the application can currently handle. A 40
 
 ---
 
+### Task 6.2
+
+I choose to create a TripService as I see it more fit for a service class to fetch from an external API and then use
+that service class in the TripController class.
+This helps to organize code and prevents TripController from becoming too overwhelming.
+
+---
+
 ### Includes:
 
 - Jackson
