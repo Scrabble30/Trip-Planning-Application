@@ -22,6 +22,8 @@ public class TripRoutes {
             put("/{id}", tripController::update);
             delete("/{id}", tripController::delete);
             put("/{tripId}/guides/{guideId}", tripController::addGuideToTrip);
+            get("/categories/{category}", tripController::getTripsByCategory);
+            get("/guides/totalprice", tripController::getGuidesTotalPrice);
             post("/populate", tripController::populate);
         };
     }

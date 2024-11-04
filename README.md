@@ -252,6 +252,53 @@ Bellow are two examples of the errors the application can currently handle. A 40
 
 ---
 
+### Task 5.1
+
+#### GET `/trips/categories/SIGHTSEEING`
+
+```json
+[
+  {
+    "id": 1,
+    "startTime": "09:00:00",
+    "endTime": "12:00:00",
+    "startPosition": "Central Station",
+    "name": "Morning City Tour",
+    "price": 49.99,
+    "category": "SIGHTSEEING",
+    "guide": {
+      "id": 1,
+      "firstName": "John",
+      "lastName": "Smith",
+      "email": "john.smith@example.com",
+      "phone": "+1-555-123-4567",
+      "yearsOfExperience": 5
+    }
+  }
+]
+```
+
+---
+
+### Task 5.2
+
+#### GET `/trips/guides/totalprice`
+
+```json
+[
+  {
+    "guideId": 1,
+    "totalPrice": 129.98000000000002
+  },
+  {
+    "guideId": 2,
+    "totalPrice": 59.99
+  }
+]
+```
+
+---
+
 ### Includes:
 
 - Jackson

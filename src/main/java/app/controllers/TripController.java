@@ -3,15 +3,22 @@ package app.controllers;
 import app.Populator;
 import app.daos.impl.TripDAO;
 import app.dtos.TripDTO;
+import app.entities.Guide;
 import app.entities.Trip;
+import app.enums.TripCategory;
 import app.exceptions.APIException;
 import app.mapper.TripMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.javalin.http.Context;
 import io.javalin.http.HttpStatus;
 import io.javalin.validation.ValidationException;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityNotFoundException;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -116,6 +123,43 @@ public class TripController {
         } catch (EntityNotFoundException e) {
             throw new APIException(HttpStatus.NOT_FOUND, e.getMessage(), e.getCause());
         }
+    }
+
+    public void getTripsByCategory(Context ctx) {
+        try {
+            TripCategory tripCategory = ctx.pathParamAsClass("category", TripCategory.class).get();
+
+            Set<Trip> trips = tripDAO.getAll();
+            Set<Trip> filteredTrips = trips.stream().filter(trip -> trip.getCategory() == tripCategory).collect(Collectors.toSet());
+            Set<TripDTO> tripDTOSet = filteredTrips.stream().map(TripMapper::convertToDTO).collect(Collectors.toSet());
+
+            ctx.status(HttpStatus.OK);
+            ctx.json(tripDTOSet, TripDTO.class);
+        } catch (ValidationException e) {
+            throw new APIException(HttpStatus.BAD_REQUEST, e.getErrors().toString(), e.getCause());
+        }
+    }
+
+    public void getGuidesTotalPrice(Context ctx) {
+        Set<Trip> trips = tripDAO.getAll();
+
+        ArrayNode response = JsonNodeFactory.instance.arrayNode();
+
+        Map<Guide, List<Trip>> guideTotalPriceMap = trips.stream()
+                .filter(trip -> trip.getGuide() != null)
+                .collect(Collectors.groupingBy(Trip::getGuide));
+
+        guideTotalPriceMap.forEach((guide, guideTrips) -> {
+            ObjectNode objectNode = JsonNodeFactory.instance.objectNode();
+
+            objectNode.put("guideId", guide.getId());
+            objectNode.put("totalPrice", guideTrips.stream().mapToDouble(Trip::getPrice).sum());
+
+            response.add(objectNode);
+        });
+
+        ctx.status(HttpStatus.OK);
+        ctx.json(response);
     }
 
     public void populate(Context ctx) {

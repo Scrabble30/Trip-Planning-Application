@@ -2,6 +2,7 @@ package app.config;
 
 import app.controllers.AccessController;
 import app.controllers.ExceptionController;
+import app.enums.TripCategory;
 import app.exceptions.APIException;
 import app.routes.Routes;
 import app.routes.SecurityRoutes;
@@ -19,6 +20,8 @@ public class AppConfig {
     private static void configuration(JavalinConfig config) {
         config.router.contextPath = "/api/v1";
         config.http.defaultContentType = "application/json";
+
+        config.validation.register(TripCategory.class, TripCategory::valueOf);
 
         config.bundledPlugins.enableRouteOverview("/routes");
         config.bundledPlugins.enableDevLogging();
